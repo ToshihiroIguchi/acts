@@ -3,6 +3,7 @@ library(nonlinearTseries)
 library(tseriesChaos)
 library(scatterplot3d)
 library(ggplot2)
+library(grid)
 
 #ベクトル形式に変換
 as.vec <- function(x){
@@ -23,14 +24,34 @@ is.chr.null <- function(x, chr = "NA"){
 }
 
 #時系列をプロット
-plot.trend <- function(vec){
+plot.trend <- function(vec, text.size = 15, range = NULL){
+  
   df <- data.frame(x = c(1 : length(vec)), y = vec)
-  ggplot(data = df, aes(x = x, y = y)) + 
+  
+  df.range <- df[c(range[1] : range[2]), ]
+
+  
+  gg1 <- ggplot(data = df, aes(x = x, y = y)) + 
     geom_line() + 
-    labs(x = "Time")+
-    theme(axis.text = element_text(size = 20)) #フォントの大きさを変えるのを変数に入れたい。
+    xlab(NULL) +
+    ylab(NULL) + 
+    theme(axis.text = element_text(size = text.size)) #フォントの大きさを変えるのを変数に入れたい。
   
+  gg2 <- ggplot(data = df.range, aes(x = x, y = y)) + 
+    geom_line() + 
+    xlab(NULL) +
+    ylab(NULL) + 
+    theme(axis.text = element_text(size = text.size)) #フォントの大きさを変えるのを変数に入れたい。
   
+  #グリッド分割
+  #https://winlabo.com/post-812
+  grid.newpage()#空の画面を作る
+  pushViewport(viewport(layout = grid.layout(2, 1)))#画面を区切る
+  
+  print(gg1, vp = viewport(layout.pos.row=1, layout.pos.col=1))
+  print(gg2, vp = viewport(layout.pos.row=2, layout.pos.col=1))
+  
+
 }
 
 #サロゲートテスト

@@ -38,6 +38,14 @@ shinyServer(function(input, output, session) {
                   choices = c("NA", worth.names(raw.data())))
     })
     
+    #調査範囲を選択
+    output$range <- renderUI({
+      sliderInput("range", "Range", min = 1, max = nrow(raw.data()), value = c(1, nrow(raw.data())))
+      
+    })
+    
+    
+    
     #閾値を選択
     output$significance <- renderUI({
       selectInput("significance", "Significance", 
@@ -53,10 +61,10 @@ shinyServer(function(input, output, session) {
       data <- reactive({raw.data() %>% dplyr::select(input$ydata) %>% as.vec()})
       
       #時系列形式のグラフ
-      output$trend.plot <- renderPlot({plot.trend(data())})
+      output$trend.plot <- renderPlot({plot.trend(data(), range = input$range)})
 
       #サロゲートテスト
-      result <- reactive({surrogate.test(time.series = data(), 
+      result <- reactive({surrogate.test(time.series = data()[c(input$range[1] : input$range[2])], 
                                          significance = as.numeric(input$significance), 
                                          K = 1)})
       

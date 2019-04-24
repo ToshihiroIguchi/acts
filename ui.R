@@ -20,24 +20,18 @@ shinyUI(fluidPage(
       #シート選択
       htmlOutput("sheet"),
       
-      
       #調査対象選択
       htmlOutput("ydata"),
       
-      
       #解析範囲
-      
-      
-      
+      htmlOutput("range"),
       
       #閾値
       htmlOutput("significance"),
       
-      
       #サロゲートテストの結果
       verbatimTextOutput("sum")
       
-
     ),
 
     # Show a plot of the generated distribution
