@@ -10,9 +10,15 @@ as.vec <- function(x){
   return(x %>% as.matrix() %>% as.vector())
 }
 
+#TRUE以外はNULLをかえす
+is.true.null <- function(x){
+  if(isTRUE(x)){return(TRUE)}else{return(NULL)}
+}
+
 #数値が格納されている部分の名前
 worth.names <- function(df){
-  is.num.names <- df %>% dplyr::summarise_all(funs(is.numeric))
+  #is.num.names <- df %>% dplyr::summarise_all(funs(is.numeric))
+  is.num.names <- df %>% dplyr::summarise_all(list(~is.numeric(.)))
   ret <- colnames(is.num.names)[as.vec(is.num.names)]
   return(ret)
 }
@@ -24,7 +30,7 @@ is.chr.null <- function(x, chr = "NA"){
 }
 
 #時系列をプロット
-plot.trend <- function(vec, text.size = 15, range = NULL){
+plot.trend <- function(vec, text.size = 12, range = NULL){
   
   df <- data.frame(x = c(1 : length(vec)), y = vec)
   
@@ -33,12 +39,14 @@ plot.trend <- function(vec, text.size = 15, range = NULL){
   
   gg1 <- ggplot(data = df, aes(x = x, y = y)) + 
     geom_line() + 
+    ggtitle("All Data") +
     xlab(NULL) +
     ylab(NULL) + 
     theme(axis.text = element_text(size = text.size)) #フォントの大きさを変えるのを変数に入れたい。
   
   gg2 <- ggplot(data = df.range, aes(x = x, y = y)) + 
     geom_line() + 
+    ggtitle("Widthin Data") +
     xlab(NULL) +
     ylab(NULL) + 
     theme(axis.text = element_text(size = text.size)) #フォントの大きさを変えるのを変数に入れたい。

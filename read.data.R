@@ -14,8 +14,8 @@ is.text <- function(text, file){
 
 #エクセルのファイルか判断
 is.excel <- function(file){
-  if(is.text(file, ".xls")){return(TRUE)}
-  if(is.text(file, ".xlsx")){return(TRUE)}
+  if(is.text(".xls", file)){return(TRUE)}
+  if(is.text(".xlsx", file)){return(TRUE)}
   return(FALSE)
 }
 
@@ -32,7 +32,7 @@ read.data <- function(file, sheet = NULL){
   
   #xlsとxlsx形式の場合
   if(is.text(".xls", file) + is.text(".xlsx", file)){
-    ret %>% read_excel(file, sheet = sheet)
+    ret <- read_excel(file, sheet = sheet)
     return(ret)
   }
   

@@ -16,6 +16,7 @@ shinyServer(function(input, output, session) {
     
     print(input$file$name)
     
+    
     #ファイルがxlsかxlsxの場合
     if(is.excel(input$file$name)){
       #xlsかxlsxの場合、シートを選択する
