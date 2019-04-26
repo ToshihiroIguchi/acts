@@ -4,6 +4,8 @@ library(tseriesChaos)
 library(scatterplot3d)
 library(ggplot2)
 library(grid)
+library(grDevices)
+
 
 #ベクトル形式に変換
 as.vec <- function(x){
@@ -96,6 +98,35 @@ embedd.plot <- function(vec, m, d){
   em <- embedd(vec, m = m, d = d)
   scatterplot3d(em, type = "l", color = "red")
 }
+
+#サロゲートテストの結果をggplot2で表示
+plot.surrogateTest <- function(result){
+  #データをデータフレームに格納
+  df <- data.frame(values = result$`surrogates.statistics`)
+  
+  #ヒストグラムのバンド幅。scottの方法
+  #https://blog.atusy.net/2018/11/09/binwdith-for-geom-histogram/#autobw-by-function
+  #https://ja.wikipedia.org/wiki/%E3%83%92%E3%82%B9%E3%83%88%E3%82%B0%E3%83%A9%E3%83%A0#%E3%83%93%E3%83%B3%E3%81%AE%E5%80%8B%E6%95%B0%E3%81%A8%E5%B9%85
+  bw.scott <- 3.5*sd(df$values)/((length(df$values))^(1/3))
+  
+  #表示
+  #http://mukkujohn.hatenablog.com/entry/2016/09/28/223957
+  #https://stats.biopapyrus.jp/r/ggplot/geom_histogram.html
+  #https://blog.atusy.net/2018/11/09/binwdith-for-geom-histogram/#autobw-by-function
+  ggplot(df, aes(x = values, y = ..density.., fill = values)) +
+    geom_histogram(binwidth = bw.scott, alpha = 0.3, fill = "blue") + 
+    geom_vline(xintercept = result$data.statistic, color = "red", size = 1) +
+    geom_density(color = "green", fill = "green", alpha = 0.2) +
+    ggtitle("Surrogate data testing") +
+    xlab("Values of the statistic")
+  
+  #凡例をつけるなら、surrogate data, original data　かな
+
+}
+
+
+
+
 
 
 

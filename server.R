@@ -61,13 +61,17 @@ shinyServer(function(input, output, session) {
       #解析対象のベクトル形式のデータ
       data <- reactive({raw.data() %>% dplyr::select(input$ydata) %>% as.vec()})
       
+      #解析範囲のデータ
+      data.range <- reactive({data()[c(input$range[1] : input$range[2])]})
+      
       #時系列形式のグラフ
       output$trend.plot <- renderPlot({plot.trend(data(), range = input$range)})
-
+   
       #サロゲートテスト
-      result <- reactive({surrogate.test(time.series = data()[c(input$range[1] : input$range[2])], 
-                                         significance = as.numeric(input$significance), 
-                                         K = 1)})
+      result <- reactive({
+        surrogate.test(time.series = data.range(), 
+                       significance = as.numeric(input$significance), 
+                       K = 1)})
       
       #結果表示
       output$sum <- renderPrint({summary(result())})
@@ -79,10 +83,10 @@ shinyServer(function(input, output, session) {
       output$su.res <- renderPrint({print(result())})
       
       #埋め込み
-      output$embedd <- renderPlot({embedd.plot(data(), m = input$m, d = input$d)})
+      output$embedd <- renderPlot({embedd.plot(data.range(), m = input$m, d = input$d)})
       
       #リカレンスプロット
-      output$recurrence <- renderPlot({recurr(data(), m = input$m, d = input$d)})
+      output$recurrence <- renderPlot({recurr(data.range(), m = input$m, d = input$d)})
 
       
     })
