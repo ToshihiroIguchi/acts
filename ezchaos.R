@@ -44,7 +44,9 @@ plot.trend <- function(vec, text.size = 12, range = NULL){
     ggtitle("All Data") +
     xlab(NULL) +
     ylab(NULL) + 
-    theme(axis.text = element_text(size = text.size)) #フォントの大きさを変えるのを変数に入れたい。
+    theme(axis.text = element_text(size = text.size)) +#フォントの大きさを変えるのを変数に入れたい。
+    annotate("rect",xmin = range[1],xmax = range[2], ymin = min(vec), ymax = max(vec),
+               alpha = 0.1, fill = "green")
   
   gg2 <- ggplot(data = df.range, aes(x = x, y = y)) + 
     geom_line() + 
@@ -100,7 +102,7 @@ embedd.plot <- function(vec, m, d){
 }
 
 #サロゲートテストの結果をggplot2で表示
-plot.surrogateTest <- function(result){
+plot.surrogateTest <- function(result, text.size = 12){
   #データをデータフレームに格納
   df <- data.frame(values = result$`surrogates.statistics`)
   
@@ -113,14 +115,16 @@ plot.surrogateTest <- function(result){
   #http://mukkujohn.hatenablog.com/entry/2016/09/28/223957
   #https://stats.biopapyrus.jp/r/ggplot/geom_histogram.html
   #https://blog.atusy.net/2018/11/09/binwdith-for-geom-histogram/#autobw-by-function
+  #凡例をつけるなら、surrogate data, original data　かな
   ggplot(df, aes(x = values, y = ..density.., fill = values)) +
     geom_histogram(binwidth = bw.scott, alpha = 0.3, fill = "blue") + 
     geom_vline(xintercept = result$data.statistic, color = "red", size = 1) +
     geom_density(color = "green", fill = "green", alpha = 0.2) +
     ggtitle("Surrogate data testing") +
-    xlab("Values of the statistic")
+    xlab("Values of the statistic") +
+    theme(axis.text = element_text(size = text.size))
   
-  #凡例をつけるなら、surrogate data, original data　かな
+  
 
 }
 
