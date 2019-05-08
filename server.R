@@ -45,6 +45,13 @@ shinyServer(function(input, output, session) {
       
     })
     
+    #差分の回数
+    output$diff.times <- renderUI({
+      selectInput("diff.times", "Order of the difference", 
+                  choices = c("0", "1", "2", "3"),
+                  selected = "0")
+    })
+    
     
     
     #閾値を選択
@@ -59,13 +66,16 @@ shinyServer(function(input, output, session) {
     observeEvent(is.chr.null(input$ydata, chr = "NA"), {
       
       #解析対象のベクトル形式のデータ
-      data <- reactive({raw.data() %>% dplyr::select(input$ydata) %>% as.vec()})
+      data <- reactive({raw.data() %>% dplyr::select(input$ydata) %>% 
+          as.vec()})
       
       #解析範囲のデータ
-      data.range <- reactive({data()[c(input$range[1] : input$range[2])]})
+      data.range <- reactive({data()[c(input$range[1] : input$range[2])] %>% 
+          diff.vec(differences = input$diff.times)})
       
       #時系列形式のグラフ
-      output$trend.plot <- renderPlot({plot.trend(data(), range = input$range)})
+      output$trend.plot <- renderPlot({plot.trend(data(), range = input$range,
+                                                  differences = input$diff.times)})
    
       #サロゲートテスト
       result <- reactive({

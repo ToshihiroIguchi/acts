@@ -26,6 +26,10 @@ shinyUI(fluidPage(
       #解析範囲
       htmlOutput("range"),
       
+      #差分
+      htmlOutput("diff.times"),
+      
+      
       #閾値
       htmlOutput("significance"),
       

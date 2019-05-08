@@ -5,6 +5,7 @@ library(scatterplot3d)
 library(ggplot2)
 library(grid)
 library(grDevices)
+library(tseries)
 
 
 #ベクトル形式に変換
@@ -31,17 +32,44 @@ is.chr.null <- function(x, chr = "NA"){
   if(x == chr){return(NULL)}else{return(TRUE)}
 }
 
+#差分を取る
+diff.vec <- function(vec, differences = "0"){
+  #diffrencesはcharacterで入力
+  #shinyで選択させるため
+  
+  #数値に変換
+  diff.num <- as.numeric(differences)
+  
+  #差分を取る場合と取らない場合で分ける
+  if(diff.num == 0){
+    #差分をとらない場合はそのまま返す
+    ret <- vec
+  }else{
+    #diffで差分を取る
+    ret <- diff(vec, differences = diff.num)
+  }
+  
+  #戻り値
+  return(ret)
+
+}
+
 #時系列をプロット
-plot.trend <- function(vec, text.size = 12, range = NULL){
+plot.trend <- function(vec, text.size = 12, range = NULL, differences = "0"){
   
   df <- data.frame(x = c(1 : length(vec)), y = vec)
   
+  #範囲を指定
+  #絶対にもっとスマートな書き方がある
   df.range <- df[c(range[1] : range[2]), ]
-
+  df.range.y <- df.range$y %>% diff.vec(differences = differences)
+  df.range <- df.range[c(1:length(df.range.y)), ]
+  df.range$y <- df.range.y
   
+
   gg1 <- ggplot(data = df, aes(x = x, y = y)) + 
     geom_line() + 
-    ggtitle("All Data") +
+    ggtitle("Original Data") +
     xlab(NULL) +
     ylab(NULL) + 
     theme(axis.text = element_text(size = text.size)) +#フォントの大きさを変えるのを変数に入れたい。
@@ -50,7 +78,7 @@ plot.trend <- function(vec, text.size = 12, range = NULL){
   
   gg2 <- ggplot(data = df.range, aes(x = x, y = y)) + 
     geom_line() + 
-    ggtitle("Widthin Data") +
+    ggtitle("Converted Data") +
     xlab(NULL) +
     ylab(NULL) + 
     theme(axis.text = element_text(size = text.size)) #フォントの大きさを変えるのを変数に入れたい。
@@ -85,7 +113,7 @@ summary.surrogateTest <- function(result){
   ds <- result$data.statistic
   
   #帰無仮説表示
-  cat("Null Hypothesis: Data comes from a linear stochastic process\n\n")
+  cat("Null Hypothesis: Data comes from a linear stochastic process\n")
   
   #仮説検定の結果を表示
   if(min.ss < ds && max.ss > ds){

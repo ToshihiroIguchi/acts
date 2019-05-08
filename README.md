@@ -9,7 +9,7 @@ First, access [CRAN](https://cran.r-project.org/), download R and install.
 You can install from R console.
 First install related packages.
 
-    install.packages(c("shiny", "readxl", "dplyr", "DT", "nonlinearTseries", "tseriesChaos", "scatterplot3d", "ggplot2", "grid"))
+    install.packages(c("shiny", "readxl", "dplyr", "DT", "nonlinearTseries", "tseriesChaos", "scatterplot3d", "ggplot2", "grid", "tseries"))
 
 If packages are installed, it can be started from R console with the following command.
     
