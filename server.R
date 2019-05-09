@@ -94,8 +94,9 @@ shinyServer(function(input, output, session) {
       #結果表示
       output$sum <- renderPrint({
         summary(result(), 
-                view = adf.false(result.adf(), 
-                                 significance = as.numeric(input$significance)))
+                view = adf.false(
+                  result.adf(), significance = as.numeric(input$significance))
+                )
         })
       
       #サロゲートテストの結果プロット
