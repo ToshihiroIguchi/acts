@@ -53,7 +53,8 @@ shinyUI(fluidPage(
                   
                   #時系列の内容を表示
                   tabPanel("Trend",
-                           plotOutput("trend.plot")
+                           plotOutput("trend.plot"),
+                           verbatimTextOutput("sum.adf")
                            ),
                   
                   #サロゲートテストの結果表示

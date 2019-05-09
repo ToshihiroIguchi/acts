@@ -52,8 +52,6 @@ shinyServer(function(input, output, session) {
                   selected = "0")
     })
     
-    
-    
     #閾値を選択
     output$significance <- renderUI({
       selectInput("significance", "Significance", 
@@ -76,6 +74,16 @@ shinyServer(function(input, output, session) {
       #時系列形式のグラフ
       output$trend.plot <- renderPlot({plot.trend(data(), range = input$range,
                                                   differences = input$diff.times)})
+      
+      #単位根検定
+      result.adf <- reactive({
+        adf.test(data.range())
+      })
+      
+      #単位根検定の結果表示
+      output$sum.adf <- renderPrint({
+        summary(result.adf(), significance = as.numeric(input$significance))
+        })
    
       #サロゲートテスト
       result <- reactive({
@@ -84,7 +92,11 @@ shinyServer(function(input, output, session) {
                        K = 1)})
       
       #結果表示
-      output$sum <- renderPrint({summary(result())})
+      output$sum <- renderPrint({
+        summary(result(), 
+                view = adf.false(result.adf(), 
+                                 significance = as.numeric(input$significance)))
+        })
       
       #サロゲートテストの結果プロット
       output$surrogate.plot <- renderPlot({plot(result())})

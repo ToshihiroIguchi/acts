@@ -105,15 +105,23 @@ surrogate.test <- function(time.series, significance = 0.05, K = 1){
   
 }
 
+#単位根過程の結果が帰無仮説を棄却できないとFALSE
+adf.false <- function(result, significance){
+  if(result$p.value > significance){return(FALSE)}else{return(TRUE)}
+}
+
+
 #サロゲートテストの結果を表示
-summary.surrogateTest <- function(result){
+summary.surrogateTest <- function(result, view = TRUE){
+  if(!view){return(NULL)}
+  
   #計算に使用するパラメータ
   min.ss <- min(result$surrogates.statistics)
   max.ss <- max(result$surrogates.statistics)
   ds <- result$data.statistic
   
   #帰無仮説表示
-  cat("Null Hypothesis: Data comes from a linear stochastic process\n")
+  cat("Null Hypothesis: Data comes from a linear stochastic process\n\n")
   
   #仮説検定の結果を表示
   if(min.ss < ds && max.ss > ds){
@@ -121,6 +129,31 @@ summary.surrogateTest <- function(result){
   }else{
     cat("Reject Null hypothesis: Original data's stat is significant larger than surrogates' stats")
   }
+}
+
+#単位根検定の結果を表示
+summary.htest <- function(result, significance = 0.05){
+  cat("Augmented Dickey-Fuller Test\n\n")
+  cat("Null hypothesis: A unit root of a univarate time series\n")
+  
+  if(result$p.value > significance){
+    cat("Accept Null hypothesis\n\n") 
+  }else{
+    cat("Reject Null hypothesis\n\n")
+  }
+  
+  
+  cat(names(result$statistic))
+  cat(" = ")
+  cat(result$statistic)
+  cat(", ")
+  cat(names(result$parameter))
+  cat(" = ")
+  cat(result$parameter)
+  cat(", p-value = ")
+  cat(result$p.value)
+  
+  
 }
 
 #埋め込みの表示
