@@ -80,6 +80,8 @@ shinyServer(function(input, output, session) {
         adf.test(data.range())
       })
       
+      print(result.adf())
+      
       #単位根検定の結果表示
       output$sum.adf <- renderPrint({
         summary(result.adf(), significance = as.numeric(input$significance))
@@ -89,14 +91,11 @@ shinyServer(function(input, output, session) {
       result <- reactive({
         surrogate.test(time.series = data.range(), 
                        significance = as.numeric(input$significance), 
-                       K = 1)})
+                       K = 3)})
       
       #結果表示
       output$sum <- renderPrint({
-        summary(result(), 
-                view = adf.false(
-                  result.adf(), significance = as.numeric(input$significance))
-                )
+        summary(result())
         })
       
       #サロゲートテストの結果プロット

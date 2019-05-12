@@ -101,33 +101,28 @@ surrogate.test <- function(time.series, significance = 0.05, K = 1){
                           significance = significance, 
                           K = K,
                           one.sided = FALSE,
+                          do.plot = FALSE,
                           FUN = timeAsymmetry)
+  result$K <- K
+  return(result)
   
 }
-
-#単位根過程の結果が帰無仮説を棄却できないとFALSE
-adf.false <- function(result, significance){
-  if(result$p.value > significance){return(FALSE)}else{return(TRUE)}
-}
-
 
 #サロゲートテストの結果を表示
-summary.surrogateTest <- function(result, view = TRUE){
-  if(!view){return(NULL)}
-  
+summary.surrogateTest <- function(result){
+
   #計算に使用するパラメータ
-  min.ss <- min(result$surrogates.statistics)
-  max.ss <- max(result$surrogates.statistics)
-  ds <- result$data.statistic
+  sv <- sort(c(result$surrogates.statistics, result$data.statistic))
+  min.max.sv <- c(sv[result$K], sv[length(sv) - result$K + 1])
   
-  #帰無仮説表示
-  cat("Null Hypothesis: Data comes from a linear stochastic process\n\n")
+  #帰無仮説
+  cat("Null Hypothesis: Data comes from a linear stochastic process\n")
   
-  #仮説検定の結果を表示
-  if(min.ss < ds && max.ss > ds){
+  #仮説検定の結果
+  if(min.max.sv[1] < result$data.statistic && min.max.sv[2] > result$data.statistic){
     cat("Accept Null hypothesis")
   }else{
-    cat("Reject Null hypothesis: Original data's stat is significant larger than surrogates' stats")
+    cat("Reject Null hyponthesis")
   }
 }
 
