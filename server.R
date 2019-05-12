@@ -8,6 +8,13 @@ library(DT)
 source("read.data.R")
 source("ezchaos.R")
 
+
+#Maximum upload size exceededを回避
+#100MB設定
+#https://github.com/rstudio/shiny-examples/blob/master/066-upload-file/server.R
+#https://stackoverflow.com/questions/18037737/how-to-change-maximum-upload-size-exceeded-restriction-in-shiny-and-save-user
+options(shiny.maxRequestSize = 100*1024^2)
+
 #本体
 shinyServer(function(input, output, session) {
 
